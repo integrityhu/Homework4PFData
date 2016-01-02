@@ -1,0 +1,83 @@
+For auth
+=========
+put these to web.xml:
+
+   <security-constraint>
+      <web-resource-collection>
+         <web-resource-name>admin</web-resource-name>
+         <url-pattern>/admin/*</url-pattern>
+      </web-resource-collection>
+      <auth-constraint>
+         <role-name>ROLE_ADMIN</role-name>
+      </auth-constraint>
+   </security-constraint>
+   <security-constraint>
+      <web-resource-collection>
+         <web-resource-name>user</web-resource-name>
+         <url-pattern>/user/*</url-pattern>
+         <http-method>POST</http-method>
+         <http-method>GET</http-method>
+      </web-resource-collection>
+      <auth-constraint>
+         <role-name>ROLE_ADMIN</role-name>
+         <role-name>ROLE_USER</role-name>
+      </auth-constraint>
+   </security-constraint>
+   <login-config>
+      <auth-method>FORM</auth-method>
+      <form-login-config>
+         <form-login-page>/login.xhtml</form-login-page>
+         <form-error-page>/error.xhtml?auth-error=true</form-error-page>
+      </form-login-config>
+   </login-config>
+   <security-role>
+      <role-name>ROLE_ADMIN</role-name>
+   </security-role>
+   <security-role>
+      <role-name>ROLE_USER</role-name>
+   </security-role>
+
+put this to jboss-web.xml
+<!-- in Wildfly 8.2 -->
+
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-web>
+    <security-domain>MyRealm</security-domain>
+</jboss-web>
+
+<!-- in JBoss AS 6.2 -->
+<!-- <security-domain>java:/jaas/MyRealm</security-domain> -->
+
+Set realm for $JBOSS_HOME/standalone/configuration/standalone.xml
+
+        <subsystem xmlns="urn:jboss:domain:security:1.2">
+            <security-domains>
+                ...
+                <security-domain name="MyRealm">
+                    <authentication>
+                        <login-module code="Database" flag="required">
+                            <module-option name="dsJndiName" value="java:jboss/datasources/Homework4PFData"/>
+                            <module-option name="principalsQuery" value="select password from v_active_user where username=?"/>
+                            <module-option name="rolesQuery" value="select group_name as Role,'Roles' as Roles from user_join_group where user_name=?"/>
+                            <module-option name="hashEncoding" value="base64"/>
+                            <module-option name="hashAlgorithm" value="SHA-256"/>
+                            <module-option name="unauthenticatedIdentity" value="anonymousUser"/>
+                        </login-module>
+                    </authentication>
+                </security-domain>
+                ...
+            </security-domains>
+        </subsystem>
+
+Make database with letmeauth
+============================
+CREATE DATABASE letmeauth
+  WITH OWNER = pzoli
+       ENCODING = 'UTF8'
+       TABLESPACE = pg_default
+       LC_COLLATE = 'hu_HU.UTF-8'
+       LC_CTYPE = 'hu_HU.UTF-8'
+       CONNECTION LIMIT = -1;
+
+run admin.sql scripts
+user passwords:q (SHA-256/base64)
