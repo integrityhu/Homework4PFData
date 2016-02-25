@@ -53,5 +53,10 @@ public class StatelessDataBean implements Serializable {
         // TODO Auto-generated method stub
         
     }
+
+	public List<SystemUser> findAll() {
+		Query q =  em.createQuery("from SystemUser");
+		return q.getResultList(); 
+	}
     
 }

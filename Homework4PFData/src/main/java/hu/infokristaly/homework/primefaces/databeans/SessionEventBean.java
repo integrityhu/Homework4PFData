@@ -80,6 +80,10 @@ public class SessionEventBean implements Serializable {
         }
         return lazyDataModel;
     }
+    
+    public List<SystemUser> findAll() {
+    	return dataBean.findAll();
+    }
 
     public void createNewSystemUser() {
         setNewSystemUser(new SystemUser());

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/templates/default.xhtml">
+	<ui:define name="content">
+		<p:growl id="growl" showSummary="true" showDetail="true" sticky="true" />
+		<h:form id="lazyForm">
+			<p:growl id="messages" showDetail="true" />
+			<p:dataTable id="lazyTable" var="item" lazy="true" width="100%"
+				value="#{sessionEventBean.lazyDataModel}" sortBy="#{item.username}"
+				scrollRows="5" scrollable="true" liveScroll="true" scrollHeight="100" style="margin-bottom:0"				
+				emptyMessage="Nincs rögzített felhasználó">
+
+				<p:column headerText="Név" footerText="Név">
+							<h:outputText value="#{item.username}" />
+				</p:column>
+
+				<p:column headerText="Email cím" footerText="Email cím">
+							<h:outputText value="#{item.emailAddress}" />
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog widgetVar="addDialog" header="Új felhasználó" modal="true"
+			closeOnEscape="true">
+			<h:form id="lazyDialogForm">
+
+				<div class="viewBorder">
+					<h:panelGrid columns="2">
+						<h:outputLabel value="Felhasználó név:" />
+						<p:inputText value="#{sessionEventBean.newSystemUser.username}"
+							rendered="true" label="Felhasználó neve">
+							<f:validateRequired />
+						</p:inputText>
+
+						<h:outputLabel value="Email cím:" />
+						<p:inputText
+							value="#{sessionEventBean.newSystemUser.emailAddress}"
+							rendered="true" label="email cím">
+							<f:validateRequired />
+						</p:inputText>
+
+						<h:outputLabel value="Jelszó:" />
+						<p:password value="#{sessionEventBean.newSystemUser.userpassword}"
+							rendered="true" label="Jelszó">
+							<f:validateRequired />
+							<f:validateLength minimum="3" />
+						</p:password>
+
+						<h:outputLabel value="Engedélyezés:" />
+						<p:selectBooleanCheckbox
+							value="#{sessionEventBean.newSystemUser.enabled}" rendered="true" />
+					</h:panelGrid>
+				</div>
+				<div style="padding-left: 25%; padding-right: 25%;">
+					<h:panelGrid columns="2">
+						<p:commandButton value="Mentés"
+							actionListener="#{sessionEventBean.persistCurrent()}"
+							onclick="PF('addDialog').hide();" update=":lazyForm" />
+						<p:commandButton value="Mégsem" onclick="PF('addDialog').hide();" />
+					</h:panelGrid>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog widgetVar="confirmDialog" modal="true" header="Megerősítés"
+			closeOnEscape="true">
+			<h:form id="confirmDialogForm">
+				<div class="viewBorder" style="padding-bottom: 20px;">
+					<h:outputText
+						value="Biztos le kívánja tiltani a felhasználó(k) bejelentkezését ?" />
+				</div>
+				<div style="padding-left: 25%; padding-right: 25%;">
+					<h:panelGrid columns="2">
+						<p:commandButton value="Tiltás"
+							onclick="PF('confirmDialog').hide();" update=":lazyForm"
+							actionListener="#{sessionEventBean.disableUsers}" />
+						<p:commandButton value="Mégsem"
+							onclick="PF('confirmDialog').hide();" />
+					</h:panelGrid>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog widgetVar="confirmDeleteDialog" modal="true"
+			closeOnEscape="true" header="Megerősítés">
+			<h:form id="confirmDeleteDialogForm">
+				<div class="viewBorder" style="padding-bottom: 20px;">
+					<h:outputText value="Biztos törölni kívánja a felhasználó(ka)t ?" />
+				</div>
+				<div style="padding-left: 25%; padding-right: 25%;">
+					<h:panelGrid columns="2">
+						<p:commandButton value="Törlés"
+							onclick="PF('confirmDeleteDialog').hide();" update=":lazyForm"
+							actionListener="#{sessionEventBean.deleteUsers}" />
+						<p:commandButton value="Mégsem"
+							onclick="PF('confirmDeleteDialog').hide();" />
+					</h:panelGrid>
+				</div>
+			</h:form>
+		</p:dialog>
+
+				<h:form>
+		<p:commandButton value="Új felhasználó" ajax="true"
+			onclick="PF('addDialog').show();" update="lazyDialogForm"
+			actionListener="#{sessionEventBean.createNewSystemUser()}" />
+
+		<p:commandButton value="Felhasználó(k) tiltása"
+			onclick="PF('confirmDialog').show();" />
+
+		<p:commandButton value="Felhasználó(k) törlése"
+			onclick="PF('confirmDeleteDialog').show();" />
+				</h:form>
+	</ui:define>
+</ui:composition>
