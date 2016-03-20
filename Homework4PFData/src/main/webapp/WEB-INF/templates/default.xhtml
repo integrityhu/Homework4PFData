@@ -17,7 +17,7 @@
 	</f:facet>
 
 </h:head>
-<f:view contentType="text/html" locale="hu">
+<f:view contentType="text/html" locale="hu" beforePhase="#{sessionEventBean.phaseListener}">
 	<h:body>
 		<h:form id="exceptionForm" enctype="multipart/form-data">
 			<p:growl id="idlemessages" showDetail="true" sticky="true" />

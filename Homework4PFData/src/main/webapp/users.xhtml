@@ -190,6 +190,12 @@
 
 		<p:commandButton value="Felhasználó(k) törlése"
 			onclick="PF('confirmDeleteDialog').show();" />
+<br/>
+		<p:commandButton value="DBInfo" update="growl"
+			action="#{sessionEventBean.getDataConnectionInfo()}" />
+
+		<p:commandButton value="ServerInfo" update="growl"
+			action="#{sessionEventBean.getAppServerInfo()}" />
 				</h:form>
 	</ui:define>
 </ui:composition>

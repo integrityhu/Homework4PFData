@@ -41,7 +41,7 @@
 
 	<context-param>
 		<param-name>org.jboss.jbossfaces.JSF_CONFIG_NAME</param-name>
-		<param-value>myfaces-2.2.8</param-value>
+		<param-value>myfaces-2.1.17</param-value>
 	</context-param>
 
 	<context-param>
